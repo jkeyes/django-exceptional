@@ -41,9 +41,9 @@ class ExceptionalMiddleware(object):
         if settings.DEBUG:
             raise MiddlewareNotUsed
 
-        try:
-            self.api_key = settings.EXCEPTIONAL_API_KEY
-        except AttributeError:
+        self.api_key = getattr(settings, 'EXCEPTIONAL_API_KEY', None)
+
+        if self.api_key is None:
             raise ImproperlyConfigured("You need to add an EXCEPTIONAL_API_KEY setting.")
 
         self.api_endpoint = EXCEPTIONAL_API_ENDPOINT + "?" + urllib.urlencode({
