@@ -98,10 +98,20 @@ class ExceptionalMiddleware(object):
         requests.
         """
 
+        # dict copy of the environment
+        env = dict(os.environ)
+
+        # are there fields to exclude from the ENV
+        if hasattr(settings, 'EXCEPTIONAL_ENV_EXCLUDE_VARS'):
+            # filter the environment
+            exclude = settings.EXCEPTIONAL_ENV_EXCLUDE_VARS
+            for key in exclude:
+                del env[key]
+
         return {
                 "application_environment": {
                     "framework": "django",
-                    "env": dict(os.environ),
+                    "env": env,
                     "language": "python",
                     "language_version": sys.version.replace('\n', ''),
                     "application_root_directory": self.project_root()
