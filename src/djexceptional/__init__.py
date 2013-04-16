@@ -53,7 +53,8 @@ class ExceptionalMiddleware(object):
 
     def process_exception(self, request, exc):
         info = {}
-        info.update(self.environment_info())
+        if not getattr(settings, 'EXCEPTIONAL_ENV_EXCLUDE', False):
+            info.update(self.environment_info())
         info.update(self.request_info(request))
         info.update(self.exception_info(exc, sys.exc_info()[2]))
 
